@@ -4,7 +4,9 @@
     For now, let's just use this to get the desired outcome and add on to it at a later time.
 {% endcomment %}
 {% form 'product', product, id: product_form_id, class: product_form_class %}
-    <input type="hidden" name="properties[_pallet_price]" id="pallet_price"> 
+    {% comment %} <input type="hidden" name="properties[_pallet_price]" id="pallet_price" > {% endcomment %}
+    <input type="hidden" name="properties[_pallet_num]" value="{{product.metafields.custom.pallet_num}}">
+    <input type="hidden" name="properties[_mainproduct_id]" value="{{product.id}}">
     <select name="id" class="original-selector" aria-label="{{ 'products.product.selector_label' | t | escape }}">
         {% for variant in product.variants %}
             <option value="{{ variant.id }}"
@@ -21,6 +23,7 @@
             <input type="hidden" name="items[{{forloop.index0}}][properties][_mainproduct_id]" value="{{product.id}}">
             <input type="hidden" name="properties[_subproduct_id_{{forloop.index0}}]" value="{{item.selected_or_first_available_variant.id}}">
         {% endfor %} 
+
     {%- if block.settings.show_tax_and_shipping -%}
         {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
             <div class="rte product-policies">

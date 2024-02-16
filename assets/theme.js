@@ -7374,9 +7374,13 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
 
     // custom-functionality
 
+    // button disabled
+    // const disableButton = document.getElementById('AddToCart');
+    // disableButton.disabled = true;
+
     // pallet
     $(document).on('keyup', '.quantity-wrapper [name=pallet]', function() {  
-
+      // disableButton.disabled = false;
       // display none breaking 
       $('.price-pallet').find('.pallet-price:last').css('display', 'none');
       let $unit = parseInt($(this).data('limit'));
@@ -7388,6 +7392,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         $('.sub-price').css('display', 'none');
         $ratio.val(0);
         $qty.val(0);
+        // disableButton.disabled = true;
       } else{
           $qty.val(Math.max(0, parseInt($(this).val()) * $unit) - parseInt(Math.ceil(parseInt($qty.val()) / $unit) * $unit - parseInt($qty.val())));
           console.log($qty, "qty_pal");
@@ -7423,7 +7428,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
     })
     // pallet
     $(document).on('change', '.quantity-wrapper [name=pallet]', function() {  
-
+      console.log("before_paellt");
       // display none breaking 
       $('.price-pallet').find('.pallet-price:last').css('display', 'none');
       let $unit = parseInt($(this).data('limit'));
@@ -7470,6 +7475,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         let $price_format = Math.round($product_update).toLocaleString("en");
         
         $('.price-pallet').find('.theme-money').html($price_format + ' kr');
+
         let inputElement = document.querySelector('input[name="items[0]quantity"]')
         inputElement.value= $pallet_val;
         console.log(inputElement, "input"); 
@@ -7502,12 +7508,21 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       // display none breaking
       let $remainder = $quantity % $unit;
       let breaking = $('.price-pallet').find('.pallet-price:last');
+
+      // number of pallet and breaking
+      let inputElement = document.querySelector('input[name="items[0]quantity"]')
+      inputElement.value= $pallet_val;
+      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
       if ($remainder == 0) {
         breaking.addClass('remove');
+        $('.pallet-price.remove').css('display', 'none');
         $breaking_price = 0;
+        input_breaking.value = 0;
       } else {
         breaking.removeClass('remove');
         $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); 
+        input_breaking.value = 1;
       }
 
       // pallet
@@ -7519,17 +7534,12 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
       $('.price-pallet').find('.pallet-value:last').data('pallet-30000').html($breaking_price + ' kr');
-
-      let inputElement = document.querySelector('input[name="items[0]quantity"]')
-      inputElement.value= $pallet_val;
-      console.log(inputElement, "input"); 
-      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
-      input_breaking.value = 1;
+      
     })
 
     // product
     $(document).on('change', '.quantity-wrapper [name=quantity]', function() {
-      console.log('pc-herer')
+      console.log('before-product-change')
       $('.price-pallet').find('.pallet-price:last').css('display', 'flex');
       let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
       let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
@@ -7548,16 +7558,25 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         $pallet.val(0);
         $ratio.val(0);
       }      
+
       // display none breaking
       let $remainder = $quantity % $unit;
       let breaking = $('.price-pallet').find('.pallet-price:last');
+
+      // number of pallet and breaking
+      let inputElement = document.querySelector('input[name="items[0]quantity"]')
+      inputElement.value= $pallet_val;
+      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
       if ($remainder == 0) {
         breaking.addClass('remove');
+        $('.pallet-price.remove').css('display', 'none');
         $breaking_price = 0;
+        input_breaking.value = 0;
       } else {
         breaking.removeClass('remove');
         $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); 
-
+        input_breaking.value = 1;
       }
 
       // pallet
@@ -7568,14 +7587,11 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      console.log($breaking_price, "breaking");
+      $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
       $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
 
-      let inputElement = document.querySelector('input[name="items[0]quantity"]')
-      inputElement.value= $pallet_val;
-      console.log(inputElement, "input"); 
-      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
-      input_breaking.value = 1;
+      
+
     })
 
     $(document).on('keyup', '.quantity-wrapper [name="quantity"]', theme.debounce(function () {
@@ -7929,6 +7945,8 @@ setInterval(() => {
 
 }, 100);
 clearInterval();
+
+
 
 
 

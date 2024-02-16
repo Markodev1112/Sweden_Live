@@ -14631,7 +14631,8 @@ body {
 /* cart list */
 .cart-list .product-list {
   display: flex;
-  flex-direction: column-reverse;
+  /* flex-direction: column-reverse; */
+  flex-direction: column;
 }
 .cart-list .product-list li {
   list-style: none;
@@ -14831,4 +14832,20 @@ body {
   margin: auto;
   margin-right: 0;
 
+}
+.product-list .item {
+  margin-top: 20px;
+}
+.product-list .item.custom-product {
+  margin-top: 0;
+
+}
+.product-list .col-image {
+  width: 120px;
+  height: 120px;
+
+}
+.product-list .custom-product .col-image {
+  width: 40px;
+  height: 40px;
 }
