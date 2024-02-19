@@ -179,7 +179,7 @@ function changeItem(_this) {
                     id: mainProductId,
                     quantity: $cartpc,
                     properties: {
-                        '_pallet_num': palletNum,
+                        '_pallet_num': $pallet_val,
                         '_mainproduct_id': main_Product_Id,
                         '_subproduct_id_0': subProductId1,
                         '_subproduct_id_1': subProductId2
@@ -210,7 +210,7 @@ function changeItem(_this) {
                         },
                         {
                             id: subProductId1,
-                            quantity: $pallet_val,
+                            quantity: 1,
                             properties: {
                                 '_mainproduct_id': main_Product_Id
                             }
@@ -259,6 +259,7 @@ function itemsUpdate(updates, data) {
     })
 }
 
+// remove
 function itemDelete(updates, data) {
     $.ajax({
     type: "POST",

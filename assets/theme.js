@@ -7151,7 +7151,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
           $ratio.val(Math.max(0, parseFloat(parseInt($qty.val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
       }
 
-        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-15000');
+        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1');
         let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
         let $pallet_real = parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val());
         let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
@@ -7198,7 +7198,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
           $ratio.val(Math.max(0, parseFloat(parseInt($qty.val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
       }
 
-        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-15000');
+        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1');
         console.log($pallet_price, "pallet_price");
 
         let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
@@ -7246,8 +7246,8 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       $('.sub-price').css('display', 'block');
       $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
       $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
-      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-15000'); //15000
-      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); //30000
+      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
       let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
       let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
 
@@ -7273,7 +7273,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         input_breaking.value = 0;
       } else {
         breaking.removeClass('remove');
-        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); 
+        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
         input_breaking.value = 1;
       }
 
@@ -7285,7 +7285,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('.price-pallet').find('.pallet-value:last').data('pallet-30000').html($breaking_price + ' kr');
+      $('.price-pallet').find('.pallet-value:last').data('pallet-2').html($breaking_price + ' kr');
       
     })
 
@@ -7299,8 +7299,8 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       $('.sub-price').css('display', 'block');
       $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
       $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
-      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-15000'); //15000
-      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); //30000
+      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
       let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
       let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
 
@@ -7327,7 +7327,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         input_breaking.value = 0;
       } else {
         breaking.removeClass('remove');
-        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-30000'); 
+        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
         input_breaking.value = 1;
       }
 
@@ -7691,13 +7691,36 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
 setInterval(() => {
   $('.cart-list li[p-handle="pallbrytningskostnad"] .quantity-and-remove').css('display', 'none');
   $('.cart-list li[p-handle="returpall-eur-pall"] .quantity-and-remove').css('display', 'none');
+  $('.cart-list li[p-handle="byggpall"] .quantity-and-remove').css('display', 'none');
+
 
   $('.cart-list li[p-handle="pallbrytningskostnad"]').addClass("custom-product");
   $('.cart-list li[p-handle="returpall-eur-pall"]').addClass("custom-product");
+  $('.cart-list li[p-handle="byggpall"]').addClass("custom-product");
+
+
+
+  
 
 }, 100);
 clearInterval();
 
+document.querySelectorAll('.product-price').forEach(item => {
+    var productPrice = item.getAttribute('data-product-price');
+    var property = item.closest('.item').querySelector('input').getAttribute('data-properties');
+    console.log(productPrice, property, "productPrice");
+    // Given array
+    // Function to get the value for a specific key
+    var data =  JSON.parse(property);
+    console.log(data, "arraydata");
+
+    if (data.length > 2) {
+      item.innerHTML = Number(productPrice) * Number(data[0][1])/100+ " kr" + " /m²";
+    } else {
+    console.log(productPrice, "price");
+      item.innerHtml = Number(productPrice)/100 + "/st";
+    }
+})
 
 
 

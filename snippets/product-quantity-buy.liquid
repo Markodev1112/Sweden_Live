@@ -99,7 +99,7 @@
                             {% for pallet_product in product.metafields.custom.pallet_product.value %}
                                 <div class="pallet-price" data-item="{{pallet_product.title}}">
                                     <span class="title">{{pallet_product.title}}</span>
-                                    <span class="aa sub-price-value pallet-value" data-pallet-{{pallet_product.price}} ="{{pallet_product.price}}">{{pallet_product.price | divided_by:100 }} kr</span>
+                                    <span class="aa sub-price-value pallet-value" data-pallet-{{ forloop.index}} ="{{pallet_product.price}}">{{pallet_product.price | divided_by:100 }} kr</span>
                                 </div> 
                             {% endfor %}
                         {% endif %}
