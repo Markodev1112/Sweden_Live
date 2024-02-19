@@ -312,7 +312,7 @@
         {% endfor %}
       </div> {% endcomment %}
       <div class="product-list">
-          {% for item in cart.items reversed %}
+          {% for item in cart.items  %}
             {% comment %}
               Determining the handle of the collection that was last seen for the 'continue shopping' link.
             {% endcomment %}
@@ -351,7 +351,7 @@
                         </div>
                       </div>
                     </div>
-                    <span class="product-price">{{ item.price | money}}</span>
+                    <span class="product-price" data-product-price="{{ item.price }}" >{{ item.price | money }} /st</span>
                     {% comment %}
                       Line Item Properties
                     {% endcomment %}
