@@ -45,7 +45,7 @@
   endif
 -%}
 
-<div class="product-block
+<div class="a product-block 
   cc-product-block
   {% unless product.available %} sold-out{% endunless %}
   {% if on_sale %} on-sale{% endif %}
@@ -58,6 +58,7 @@
   {% if product_has_swatches %}product-block--has-swatches{% endif %}
   {{ product_class }}"
      data-loop-index="{{ i }}"
+     data-product-show = "{{ product.metafields.custom.group }}"
   {% if animate %} data-cc-animate="{{ animation_type }}" data-cc-animate-delay="{{ animate | times: 0.15 }}s" {% endif %}
 
   {% if product.images.size > 1 %}
