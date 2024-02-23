@@ -7733,29 +7733,23 @@ clearInterval();
 document.querySelectorAll('.product-price').forEach(item => {
     var productPrice = item.getAttribute('data-product-price');
     var property = item.closest('.item').querySelector('input').getAttribute('data-properties');
-    console.log(productPrice, property, "productPrice");
     // Given array
     // Function to get the value for a specific key
     var data =  JSON.parse(property);
-    console.log(data, "arraydata");
 
     if (data.length > 2) {
       item.innerHTML = "";
-      console.log("no value");
     } else {
-    console.log(productPrice, "price");
       item.innerHtml = Number(productPrice)/100 + "/st";
     }
 })
 
 // custom search result
 document.querySelector('.search-btn').addEventListener('click', (e) => {
-  console.log("search");
   // e.preventDefault();
   setTimeout(() => {
    document.querySelectorAll('.product-block').forEach(item => {
       if (item.getAttribute('data-product-show') == "search") {
-        console.log(item, "item");
         item.style.display = "none";
       }
       
@@ -7769,7 +7763,6 @@ document.querySelector('.search-btn').addEventListener('click', (e) => {
 setTimeout(() => {
    document.querySelectorAll('.product-block').forEach(item => {
       if (item.getAttribute('data-product-show') == "search") {
-        console.log(item, "item");
         item.style.display = "none";
       }
       

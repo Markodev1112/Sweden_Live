@@ -124,6 +124,7 @@ $(document).on("click", ".jc-cart-remove", function (e) {
 // click +, - button
 $(document).on('change', '.jc-cart-value', function(e) {
     e.preventDefault();
+    console.log($(this));
     changeItem($(this));
 })
 $(document).on('keyup', '.jc-cart-value', function(e) {
@@ -152,6 +153,9 @@ $('.jc-cart .plus').click(function(e){
 // +, - product
 
 function changeItem(_this) {
+    if (_this.data('properties')) {
+        
+    console.log(_this.data('properties'), "func");
     var updates = {};
     var data ={};
     let $cartpc = _this.val();
@@ -168,30 +172,33 @@ function changeItem(_this) {
         let str_selectedId = item.querySelector('input').getAttribute('data-properties');
         let selectedId = JSON.parse(str_selectedId)[0][1];
         if (selectedId == main_Product_Id ) {
-            console.log(item, "herer");
+
+            console.log($breaking_val, "breaking");
+            console.log($cartpc, "cartpc");
+            console.log(palletNum, "palletNum");
+
             var key = item.getAttribute('data-item-key');
             updates[key] = 0;
-            console.log(updates[key], "key");
 
             data = {
                 items: [
-                {
-                    id: mainProductId,
-                    quantity: $cartpc,
-                    properties: {
-                        '_pallet_num': $pallet_val,
-                        '_mainproduct_id': main_Product_Id,
-                        '_subproduct_id_0': subProductId1,
-                        '_subproduct_id_1': subProductId2
+                    {
+                        id: mainProductId,
+                        quantity: $cartpc,
+                        properties: {
+                            '_pallet_num': $pallet_val,
+                            '_mainproduct_id': main_Product_Id,
+                            '_subproduct_id_0': subProductId1,
+                            '_subproduct_id_1': subProductId2
+                        }
+                    },
+                    {
+                        id: subProductId1,
+                        quantity: $pallet_val,
+                        properties: {
+                            '_mainproduct_id': main_Product_Id,
+                        }
                     }
-                },
-                {
-                    id: subProductId1,
-                    quantity: $pallet_val,
-                    properties: {
-                        '_mainproduct_id': main_Product_Id,
-                    }
-                }
                 ]
             }
 
@@ -226,8 +233,10 @@ function changeItem(_this) {
                 }
             }    
             updates[_this.closest('.item').data('item-key')] = 0;
+            console.log(data, "data");
         }
     })
+    }
 
     itemsUpdate(updates, data);        
 }
