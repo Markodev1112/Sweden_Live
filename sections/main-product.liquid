@@ -26,13 +26,13 @@
       assign has_buy_buttons = true
       assign enable_mobile_sticky_cart = block.settings.enable_mobile_sticky_cart
     endif
-      if block.type == 'calculated_quantity'
-          if block.settings.consequent != blank
-              assign has_buy_buttons = true
-              assign has_qty_buy = true
-              assign enable_mobile_sticky_cart = false
-          endif
-      endif
+    if block.type == 'calculated_quantity'
+        if block.settings.consequent != blank
+            assign has_buy_buttons = true
+            assign has_qty_buy = true
+            assign enable_mobile_sticky_cart = false
+        endif
+    endif
   endfor
 -%}
 

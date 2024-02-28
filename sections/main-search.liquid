@@ -8,7 +8,12 @@
     assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: current_sort_by | append: '&type=' | append: settings.search_type
   endif
 -%}
-
+{% style %}
+  .custom-search-result {
+    display: flex;
+    flex-wrap: wrap;
+  }
+{% endstyle %}
 <div data-section-type="search-template"
      data-ajax-filtering="{{ section.settings.ajax_products }}"
      data-components="tabs,product-block,price-range,accordion,sticky-scroll-direction"
@@ -30,7 +35,7 @@
                  placeholder="{{ 'general.search.page_placeholder' | t }}"
                  aria-label="{{ 'general.search.input_label' | t | escape }}"
                  autocomplete="off" required />
-          <button class="compact no-hover" type="submit" aria-label="{{ 'general.search.submit' | t }}">{% render 'svg-rarrow-long' %}</button>
+          <button class="search-btn compact no-hover" type="submit" aria-label="{{ 'general.search.submit' | t }}">{% render 'svg-rarrow-long' %}</button>
         </div>
       </form>
     </div>

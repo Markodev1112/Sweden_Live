@@ -17,12 +17,12 @@
                     data-stock="{% if variant.inventory_management != blank and variant.inventory_quantity <= 0 %}out{% endif %}">{{ variant.title | escape }}</option>
         {% endfor %}
     </select>
-        {% for item in product.metafields.custom.pallet_product.value %}
-            <input type="hidden" name="items[{{ forloop.index0 }}]id" value="{{ item.selected_or_first_available_variant.id }}">
-            <input type="hidden" name="items[{{forloop.index0}}]quantity" data-product = {{item.title}} >
-            <input type="hidden" name="items[{{forloop.index0}}][properties][_mainproduct_id]" value="{{product.id}}">
-            <input type="hidden" name="properties[_subproduct_id_{{forloop.index0}}]" value="{{item.selected_or_first_available_variant.id}}">
-        {% endfor %} 
+    {% for item in product.metafields.custom.pallet_product.value %}
+        <input type="hidden" name="items[{{ forloop.index0 }}]id" value="{{ item.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="items[{{forloop.index0}}]quantity" data-product = {{item.title}} >
+        <input type="hidden" name="items[{{forloop.index0}}][properties][_mainproduct_id]" value="{{product.id}}">
+        <input type="hidden" name="properties[_subproduct_id_{{forloop.index0}}]" value="{{item.selected_or_first_available_variant.id}}">
+    {% endfor %} 
 
     {%- if block.settings.show_tax_and_shipping -%}
         {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}

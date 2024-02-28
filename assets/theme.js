@@ -7364,6 +7364,8 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
     
     // ratio
     $(document).on('change', '.ratio-wrapper [name="ratio"]', function () {
+      console.log("ratio-change");
+      $('.sub-price').css('display', 'block');
       let $ratio = $(this);
       let consequent = $ratio.data('consequent');
       let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
@@ -7379,54 +7381,66 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       /* now set the ratio value again, this time to be the qty times the min */
       $ratio.val(Math.max(0, parseFloat($qty.val() / consequent).toFixed(2)));
       let $pallet_real = $pallet.val(Math.max(0, (parseInt($qty.val()) / $unit).toFixed(2)));
-      let $pallet_price = parseInt($('.price-pallet').find('.pallet-value').data('pallet-price'));
-      let $breaking_price;
-      if ($('.price-pallet').find('.breaking-value').html()) {
-          $breaking_price = parseInt($('.price-pallet').find('.breaking-value').html().slice(0,-2));
-      }
-      
+      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000         
       let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
       
-      // breaking
+      // display none pallet
+      if ($(this).val() == 0) {
+        $('.sub-price').css('display', 'none');
+        $pallet.val(0);
+        $qty.val(0);
+      }      
+
+      // display none breaking
       let $remainder = $qty_real.val() % $unit;
+      console.log($remainder, "remainder");
+      let breaking = $('.price-pallet').find('.pallet-price:last');
+
+      // number of pallet and breaking
+      let inputElement = document.querySelector('input[name="items[0]quantity"]')
+      inputElement.value= $pallet_val;
+      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
       if ($remainder == 0) {
-        $('.price-pallet').find('.breaking').addClass('remove');
-        $('input[data-product="Pallbrytningskostnad"]').val(0);
+        breaking.addClass('remove');
+        $('.pallet-price.remove').css('display', 'none');
         $breaking_price = 0;
+        input_breaking.value = 0;
       } else {
-        $('.price-pallet').find('.breaking').removeClass('remove');
-        $('input[data-product="Pallbrytningskostnad"]').val(1);
+        breaking.removeClass('remove');
+        $('.pallet-price').css('display', 'flex');
+        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
+        console.log($breaking_price, "breakingprice");
+        input_breaking.value = 1;
       }
 
       // pallet
-      let $pallet_update = $pallet_price * Math.ceil($pallet_real.val());
-      $('.price-pallet').find('.pallet-value').html($pallet_update + ' kr');
-      $('input[data-product="Returpall"]').val($pallet_val);
+      let $pallet_update = $pallet_price/100 * $pallet_val;
+
       // product
       let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update;
-      if ($breaking_price ) {
-        $product_update =parseFloat($product_price * $quantity + $breaking_price + $pallet_update).toFixed(2) ; 
-      } else {
-        $product_update =parseFloat($product_price * $quantity + $pallet_update).toFixed(2) ;
-      }
-      
+      let $product_update =parseFloat($product_price * $qty.val() + $breaking_price/100 + $pallet_update).toFixed(2);
+      console.log($product_update, "update");
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('#product_price').val($price_format);
+      $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
+      $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+
       return false;
     });
 
     // ratio
     $(document).on('keyup', '.ratio-wrapper [name="ratio"]', function () {
-      console.log("keyup here")
+      console.log("ratio-key");
       $('.sub-price').css('display', 'block');
       let $ratio = $(this);
       let consequent = $ratio.data('consequent');
       let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
       let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
       /* store the entered value */
-      let antecedent = $ratio.val();
+      var antecedent = $ratio.val();
+      console.log(antecedent, "herer");
       /* make the quantity input reflect the calculated result of this number */
       let $qty = $ratio.closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
       /*
@@ -7436,41 +7450,52 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       /* now set the ratio value again, this time to be the qty times the min */
       $ratio.val(Math.max(0, parseFloat($qty.val() / consequent).toFixed(2)));
       let $pallet_real = $pallet.val(Math.max(0, (parseInt($qty.val()) / $unit).toFixed(2)));
-      let $pallet_price = parseInt($('.price-pallet').find('.pallet-value').data('pallet-price'));
-      let $breaking_price;
-      if ($('.price-pallet').find('.breaking-value').html()) {
-          $breaking_price = parseInt($('.price-pallet').find('.breaking-value').html().slice(0,-2));
-      }
-      
+      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000         
       let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
       
-      // breaking
+      // display none pallet
+      if ($(this).val() == 0) {
+        $('.sub-price').css('display', 'none');
+        $pallet.val(0);
+        $qty.val(0);
+      }      
+
+      // display none breaking
       let $remainder = $qty_real.val() % $unit;
+      console.log($remainder, "remainder");
+      let breaking = $('.price-pallet').find('.pallet-price:last');
+
+      // number of pallet and breaking
+      let inputElement = document.querySelector('input[name="items[0]quantity"]')
+      inputElement.value= $pallet_val;
+      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
       if ($remainder == 0) {
-        $('.price-pallet').find('.breaking').addClass('remove');
-        $('input[data-product="Pallbrytningskostnad"]').val(0);
+        breaking.addClass('remove');
+        $('.pallet-price.remove').css('display', 'none');
         $breaking_price = 0;
+        input_breaking.value = 0;
       } else {
-        $('.price-pallet').find('.breaking').removeClass('remove');
-        $('input[data-product="Pallbrytningskostnad"]').val(1);
+        breaking.removeClass('remove');
+        $('.pallet-price').css('display', 'flex');
+        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
+        console.log($breaking_price, "breakingprice");
+        input_breaking.value = 1;
       }
 
       // pallet
-      let $pallet_update = $pallet_price * Math.ceil($pallet_real.val());
-      $('.price-pallet').find('.pallet-value').html($pallet_update + ' kr');
-      $('input[data-product="Returpall"]').val($pallet_val);
+      let $pallet_update = $pallet_price/100 * $pallet_val;
+
       // product
       let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update;
-      if ($breaking_price ) {
-        $product_update =parseFloat($product_price * $quantity + $breaking_price + $pallet_update).toFixed(2) ; 
-      } else {
-        $product_update =parseFloat($product_price * $quantity + $pallet_update).toFixed(2) ;
-      }
-      
+      let $product_update =parseFloat($product_price * $qty.val() + $breaking_price/100 + $pallet_update).toFixed(2);
+      console.log($product_update, "update");
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('#product_price').val($price_format);
+      $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
+      $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+
       return false;
     });
 
@@ -7708,20 +7733,41 @@ clearInterval();
 document.querySelectorAll('.product-price').forEach(item => {
     var productPrice = item.getAttribute('data-product-price');
     var property = item.closest('.item').querySelector('input').getAttribute('data-properties');
-    console.log(productPrice, property, "productPrice");
     // Given array
     // Function to get the value for a specific key
     var data =  JSON.parse(property);
-    console.log(data, "arraydata");
 
     if (data.length > 2) {
-      item.innerHTML = Number(productPrice) * Number(data[0][1])/100+ " kr" + " /m²";
+      item.innerHTML = "";
     } else {
-    console.log(productPrice, "price");
       item.innerHtml = Number(productPrice)/100 + "/st";
     }
 })
 
+// custom search result
+document.querySelector('.search-btn').addEventListener('click', (e) => {
+  // e.preventDefault();
+  setTimeout(() => {
+   document.querySelectorAll('.product-block').forEach(item => {
+      if (item.getAttribute('data-product-show') == "search") {
+        item.style.display = "none";
+      }
+      
+    })
+}, "1000");
+})
+
+
+
+// Set a timeout for 3 seconds (3000 milliseconds)
+setTimeout(() => {
+   document.querySelectorAll('.product-block').forEach(item => {
+      if (item.getAttribute('data-product-show') == "search") {
+        item.style.display = "none";
+      }
+      
+    })
+}, "1000");
 
 
 
