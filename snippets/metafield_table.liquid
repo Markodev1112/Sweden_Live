@@ -5,10 +5,10 @@
   {%- if _settings.title != blank and _settings.metafields != blank -%}
     {%- liquid
       assign table_render_only = false
-      if _settings.append_id != ""
+      if _settings.append_id != ''
         assign table_render_only = true
       endif
-      if _settings.append_id == "" and _settings.display_as == "block"
+      if _settings.append_id == '' and _settings.display_as == 'block'
         assign table_render_only = true
       endif
     -%}
@@ -24,10 +24,6 @@
           {%- assign parsed_metafield_namespace = product.metafields[metafield_namespace] -%}
           {%- assign metafield_key = metafield_parts | last | strip -%}
           {%- assign parsed_metafield = parsed_metafield_namespace[metafield_key] -%}
-          {% comment %} <!-- namespace: {{ metafield_namespace }} --> {% endcomment %}
-          {% comment %} <!-- type: {{ parsed_metafield.type }} --> {% endcomment %}
-          {% comment %} <!-- key: {{ metafield_key }} --> {% endcomment %}
-          {% comment %} <!-- value: {{ parsed_metafield.value }} --> {% endcomment %}
           {%- assign display_key = metafield_key | replace: '_', ' ' | capitalize -%}
           {%- if settings.metafield_key_label_list != blank -%}
             {%- assign key_label_list = settings.metafield_key_label_list | newline_to_br | split: '<br />' -%}
@@ -86,22 +82,39 @@
       <div class="metafields-table-container">{{ metafield_table_html }}</div>
     {%- else -%}
       <div class="cc-tabs__tab" role="tablist">
-        {%- if _settings.display_as == "accordion" -%}
-          <a href="#" class="cc-tabs__accordion__header" role="tab" aria-selected="{{ render_as_selected }}"
-            aria-controls="product-tab-panelFields_{{ metafield_table.id }}" data-cc-toggle-panel="Fields_{{ metafield_table.id }}">
+        {%- if _settings.display_as == 'accordion' -%}
+          <a
+            href="#"
+            class="cc-tabs__accordion__header"
+            role="tab"
+            aria-selected="{{ render_as_selected }}"
+            aria-controls="product-tab-panelFields_{{ metafield_table.id }}"
+            data-cc-toggle-panel="Fields_{{ metafield_table.id }}"
+          >
             {{ _settings.title }}
           </a>
         {%- endif -%}
-        <div class="cc-tabs__tab__panel rte" {% unless render_as_selected %}hidden=""{% endunless %} role="tab" id="product-tab-panelFields_{{ metafield_table.id }}"
-            aria-labelledby="product-tab-panelFields_{{ metafield_table.id }}">
-            {% if _settings.rte_content != blank %}
-              <div class="rte">
-                {{ _settings.rte_content }}
-              </div>
-            {% endif %}
-            {{ metafield_table_html }}
+        <div
+          class="a cc-tabs__tab__panel rte"
+          {% unless render_as_selected %}
+            hidden=""
+          {% endunless %}
+          role="tab"
+          id="product-tab-panelFields_{{ metafield_table.id }}"
+          aria-labelledby="product-tab-panelFields_{{ metafield_table.id }}"
+        >
+          {% if _settings.rte_content != blank %}
+            <div class="rte">
+              {{ _settings.rte_content }}
+            </div>
+          {% endif %}
+          {{ metafield_table_html }}
         </div>
       </div>
     {%- endif -%}
   {%- endif -%}
 {%- endunless -%}
+
+<script>
+  console.log({{ _settings.metafields | json }}, "---meta")
+</script>

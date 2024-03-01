@@ -7107,20 +7107,8 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       
       return false;
     });
-    // ratio quantity
-    $(document).on('click', '.ratio-wrapper [data-quantity]',function () {
-      var $input = $(this);
-      var $parent = $input.closest('.ratio-wrapper');
-      var adj = $input.data('quantity') == 'up' ? 0.18 : -0.18;
-      let $qty = $parent.find('input');
-      $('.sub-price').css('display', 'block');
-      // var $pallet_qty = $parent.find('[name=pallet]');
-      // var qty_val = $qty.val(Math.max(1, parseInt($qty.val()) + adj));
-      $qty.val(Math.max(0, Number($qty.val()) + adj).toFixed(2));
-      $qty.change();   
-      
-      return false;
-    });
+    
+
     // addToCart Button
     $('.product-detail__form__options--with-calculated-quantity #AddToCart').prop('disabled', true);
     
@@ -7237,198 +7225,240 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
     })
 
     // product
+    
     $(document).on('keyup', '.quantity-wrapper [name=quantity]', function() {
-      console.log('pc-keyup')
-      $('.price-pallet').find('.pallet-price:last').css('display', 'flex');
-      let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
-      let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
-      let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
-      $('.sub-price').css('display', 'block');
-      $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
-      $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
-      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
-      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
-      let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
-      let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "bags") {
+        console.log("keyup pc for bags");
+        let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
+        console.log($ratio.data('consequent'), "ratio");
+        $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) * parseFloat($ratio.data('consequent'))).toFixed(2)));
+        let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
 
-      // display none pallet
-      if ($(this).val() == 0) {
-        $('.sub-price').css('display', 'none');
-        $pallet.val(0);
-        $ratio.val(0);
-      }      
-      // display none breaking
-      let $remainder = $quantity % $unit;
-      let breaking = $('.price-pallet').find('.pallet-price:last');
-
-      // number of pallet and breaking
-      let inputElement = document.querySelector('input[name="items[0]quantity"]')
-      inputElement.value= $pallet_val;
-      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
-
-      if ($remainder == 0) {
-        breaking.addClass('remove');
-        $('.pallet-price.remove').css('display', 'none');
-        $breaking_price = 0;
-        input_breaking.value = 0;
-      } else {
-        breaking.removeClass('remove');
-        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
-        input_breaking.value = 1;
+        // product
+        let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+        let $product_update =parseFloat($product_price * $quantity).toFixed(2);
+        let $price_format = Math.round($product_update).toLocaleString("en");
+        $('.price-pallet').find('.theme-money').html($price_format + ' kr');
       }
 
-      // pallet
-      let $pallet_update = $pallet_price/100 * $pallet_val;
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "pallet") {
+        $('.price-pallet').find('.pallet-price:last').css('display', 'flex');
+        let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
+        let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
+        let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
+        $('.sub-price').css('display', 'block');
+        $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
+        $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
+        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+        let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
+        let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
+        let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
 
-      // product
-      let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
-      let $price_format = Math.round($product_update).toLocaleString("en");
-      $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('.price-pallet').find('.pallet-value:last').data('pallet-2').html($breaking_price + ' kr');
-      
+        // display none pallet
+        if ($(this).val() == 0) {
+          $('.sub-price').css('display', 'none');
+          $pallet.val(0);
+          $ratio.val(0);
+        }      
+
+        // display none breaking
+        let $remainder = $quantity % $unit;
+        let breaking = $('.price-pallet').find('.pallet-price:last');
+
+        // number of pallet and breaking
+        let inputElement = document.querySelector('input[name="items[0]quantity"]')
+        inputElement.value= $pallet_val;
+        let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
+        if ($remainder == 0) {
+          breaking.addClass('remove');
+          $('.pallet-price.remove').css('display', 'none');
+          $breaking_price = 0;
+          input_breaking.value = 0;
+        } else {
+          breaking.removeClass('remove');
+          $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
+          input_breaking.value = 1;
+        }
+
+        // pallet
+        let $pallet_update = $pallet_price/100 * $pallet_val;
+
+        // product
+        let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+        let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
+        let $price_format = Math.round($product_update).toLocaleString("en");
+        $('.price-pallet').find('.theme-money').html($price_format + ' kr');
+        $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
+        $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+
+      }  
     })
 
     // product
     $(document).on('change', '.quantity-wrapper [name=quantity]', function() {
-      console.log('before-product-change')
-      $('.price-pallet').find('.pallet-price:last').css('display', 'flex');
-      let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
-      let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
-      let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
-      $('.sub-price').css('display', 'block');
-      $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
-      $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
-      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
-      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
-      let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
-      let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "bags") {
+        let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
+        $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) * parseFloat($ratio.data('consequent'))).toFixed(2)));
+        let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
 
-      // display none pallet
-      if ($(this).val() == 0) {
-        $('.sub-price').css('display', 'none');
-        $pallet.val(0);
-        $ratio.val(0);
-      }      
-
-      // display none breaking
-      let $remainder = $quantity % $unit;
-      let breaking = $('.price-pallet').find('.pallet-price:last');
-
-      // number of pallet and breaking
-      let inputElement = document.querySelector('input[name="items[0]quantity"]')
-      inputElement.value= $pallet_val;
-      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
-
-      if ($remainder == 0) {
-        breaking.addClass('remove');
-        $('.pallet-price.remove').css('display', 'none');
-        $breaking_price = 0;
-        input_breaking.value = 0;
-      } else {
-        breaking.removeClass('remove');
-        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
-        input_breaking.value = 1;
+        // product
+        let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+        let $product_update =parseFloat($product_price * $quantity).toFixed(2);
+        let $price_format = Math.round($product_update).toLocaleString("en");
+        $('.price-pallet').find('.theme-money').html($price_format + ' kr');
       }
 
-      // pallet
-      let $pallet_update = $pallet_price/100 * $pallet_val;
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "pallet") {
+        $('.price-pallet').find('.pallet-price:last').css('display', 'flex');
+        let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
+        let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
+        let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
+        $('.sub-price').css('display', 'block');
+        $ratio.val(Math.max(0, parseFloat(parseInt($(this).val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
+        $pallet.val(Math.max(0, (parseInt($(this).val()) / $unit).toFixed(3)));
+        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+        let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000
+        let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
+        let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
 
-      // product
-      let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
-      let $price_format = Math.round($product_update).toLocaleString("en");
-      $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
-      $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+        // display none pallet
+        if ($(this).val() == 0) {
+          $('.sub-price').css('display', 'none');
+          $pallet.val(0);
+          $ratio.val(0);
+        }      
+
+        // display none breaking
+        let $remainder = $quantity % $unit;
+        let breaking = $('.price-pallet').find('.pallet-price:last');
+
+        // number of pallet and breaking
+        let inputElement = document.querySelector('input[name="items[0]quantity"]')
+        inputElement.value= $pallet_val;
+        let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
+        if ($remainder == 0) {
+          breaking.addClass('remove');
+          $('.pallet-price.remove').css('display', 'none');
+          $breaking_price = 0;
+          input_breaking.value = 0;
+        } else {
+          breaking.removeClass('remove');
+          $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
+          input_breaking.value = 1;
+        }
+
+        // pallet
+        let $pallet_update = $pallet_price/100 * $pallet_val;
+
+        // product
+        let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+        let $product_update =parseFloat($product_price * $quantity + $breaking_price/100 + $pallet_update).toFixed(2);
+        let $price_format = Math.round($product_update).toLocaleString("en");
+        $('.price-pallet').find('.theme-money').html($price_format + ' kr');
+        $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
+        $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+
+      }
+      
 
       
 
     })
 
-    $(document).on('keyup', '.quantity-wrapper [name="quantity"]', theme.debounce(function () {
-      var $qty = $(this);
-      var $parent = $qty.closest('.quantity-wrapper');
-      $qty.val(Math.max(0, parseInt($qty.val())));
-      if($parent.hasClass("calculated-input-wrapper")){
-        // if our quantity - + was for a calculated item, adjust the ratio input to reflect the current quantity value.
-        // grab the ratio element, and grab the minimum value
-        var $ratio = $qty.closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
-        var consequent = $ratio.data('consequent');
+    // ratio quantity
+    $(document).on('click', '.ratio-wrapper [data-quantity]',function () {
+      console.log("here agaain----------->");
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "bags") {
+          var $input = $(this);
+          let consequent = $(this).closest('.ratio-wrapper').find('[name="ratio"]').data('consequent');
+          console.log(consequent, "consequent");
+          var $parent = $input.closest('.ratio-wrapper');
+          var adj = $input.data('quantity') == 'up' ? consequent : -consequent;
+          console.log(adj, "adj");
+          let $qty = $parent.find('input');
+          $qty.val(Math.max(0, Number($qty.val()) + adj).toFixed(2));
+          let pc = $qty.val()/consequent;
+          let pc_quantity = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
+          pc_quantity.val(pc);
+          $qty.change();           
 
-        $ratio.val(Math.max(0, parseFloat(parseInt($qty.val()) / consequent ).toFixed(2)));
+          // // product
+          let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+          let $product_update =parseFloat($product_price * pc).toFixed(2);
+          let $price_format = Math.round($product_update).toLocaleString("en");
+          $('.price-pallet').find('.theme-money').html($price_format + ' kr');
       }
-      return false;
-    }, 1000));
 
-    
-    // ratio
-    $(document).on('change', '.ratio-wrapper [name="ratio"]', function () {
-      console.log("ratio-change");
-      $('.sub-price').css('display', 'block');
-      let $ratio = $(this);
-      let consequent = $ratio.data('consequent');
-      let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
-      let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
-      /* store the entered value */
-      var antecedent = $ratio.val();
-      /* make the quantity input reflect the calculated result of this number */
-      let $qty = $ratio.closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
-      /*
-      set the quantity value to be equal to the entered value divided by the ratio minimum, but that result up to the nearest whole number
-      give us that number as an integer, but if that number is below 1, give us 1. Quantity must always be an integer >= 1 */
-      let $qty_real = $qty.val(Math.max(0, parseInt(Math.ceil(antecedent * consequent ))));
-      /* now set the ratio value again, this time to be the qty times the min */
-      $ratio.val(Math.max(0, parseFloat($qty.val() / consequent).toFixed(2)));
-      let $pallet_real = $pallet.val(Math.max(0, (parseInt($qty.val()) / $unit).toFixed(2)));
-      let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
-      let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000         
-      let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
+      if ($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').data('type') == "pallet") {
+        console.log("ratio-change");
+        $('.sub-price').css('display', 'block');
+        var $input = $(this);
+        let consequent = $(this).closest('.ratio-wrapper').find('[name="ratio"]').data('consequent');
+        let ratio_unit = Number(1/consequent).toFixed(2);
+        console.log(ratio_unit, "ratio_unit");
+        let adj = $input.data('quantity') == 'up' ? Number(ratio_unit) : -Number(ratio_unit);
+        let $ratio_qty = $input.closest('.ratio-wrapper').find('input');
+        $ratio_qty.val(Number($ratio_qty.val()) + adj);
+        let pc = Math.ceil($ratio_qty.val()/ratio_unit);
+        let pc_quantity = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
+        pc_quantity.val(pc); 
+
+        let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
+        let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
+        let pallet_value = Math.max(0, (pc / $unit).toFixed(2));
+        $pallet.val(pallet_value);
+        let $pallet_price = $('.price-pallet').find('.pallet-value').data('pallet-1'); //15000
+        let $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); //30000         
+        let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
+        
+        // display none pallet
+        if (adj == 0) {
+          $('.sub-price').css('display', 'none');
+          $pallet.val(0);
+          pc = 0;
+        }      
+
+        // display none breaking
+        let $remainder = pc % $unit;
+        let breaking = $('.price-pallet').find('.pallet-price:last');
+
+        // number of pallet and breaking
+        let inputElement = document.querySelector('input[name="items[0]quantity"]')
+        inputElement.value= $pallet_val;
+        let input_breaking = document.querySelector('input[name="items[1]quantity"]')
+
+        if ($remainder == 0) {
+          breaking.addClass('remove');
+          $('.pallet-price.remove').css('display', 'none');
+          $breaking_price = 0;
+          input_breaking.value = 0;
+        } else {
+          breaking.removeClass('remove');
+          $('.pallet-price').css('display', 'flex');
+          $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
+          console.log($breaking_price, "breakingprice");
+          input_breaking.value = 1;
+        }
+
+        // pallet
+        let $pallet_update = $pallet_price/100 * $pallet_val;
+
+        // product
+        let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
+        let $product_update =parseFloat($product_price * pc + $breaking_price/100 + $pallet_update).toFixed(2);
+        let $price_format = Math.round($product_update).toLocaleString("en");
+        $('.price-pallet').find('.theme-money').html($price_format + ' kr');
+        $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
+        $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
+
+      }
+     
       
-      // display none pallet
-      if ($(this).val() == 0) {
-        $('.sub-price').css('display', 'none');
-        $pallet.val(0);
-        $qty.val(0);
-      }      
-
-      // display none breaking
-      let $remainder = $qty_real.val() % $unit;
-      console.log($remainder, "remainder");
-      let breaking = $('.price-pallet').find('.pallet-price:last');
-
-      // number of pallet and breaking
-      let inputElement = document.querySelector('input[name="items[0]quantity"]')
-      inputElement.value= $pallet_val;
-      let input_breaking = document.querySelector('input[name="items[1]quantity"]')
-
-      if ($remainder == 0) {
-        breaking.addClass('remove');
-        $('.pallet-price.remove').css('display', 'none');
-        $breaking_price = 0;
-        input_breaking.value = 0;
-      } else {
-        breaking.removeClass('remove');
-        $('.pallet-price').css('display', 'flex');
-        $breaking_price = $('.price-pallet').find('.pallet-value:last').data('pallet-2'); 
-        console.log($breaking_price, "breakingprice");
-        input_breaking.value = 1;
-      }
-
-      // pallet
-      let $pallet_update = $pallet_price/100 * $pallet_val;
-
-      // product
-      let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update =parseFloat($product_price * $qty.val() + $breaking_price/100 + $pallet_update).toFixed(2);
-      console.log($product_update, "update");
-      let $price_format = Math.round($product_update).toLocaleString("en");
-      $('.price-pallet').find('.theme-money').html($price_format + ' kr');
-      $('.price-pallet').find('.pallet-value:first').html($pallet_price*$pallet_val/100 + ' kr');
-      $('.price-pallet').find('.pallet-value:last').html($breaking_price/100 + ' kr');
-
       return false;
     });
+ 
 
     // ratio
     $(document).on('keyup', '.ratio-wrapper [name="ratio"]', function () {
