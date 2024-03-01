@@ -43,80 +43,80 @@ $(document).on("click", ".jc-cart-remove", function (e) {
     e.preventDefault();
     var updates = {};
     var data = {};
-    if ($(this).data('properties').length > 1) {
-    let $cartpc = $(this).val();
-    let mainProductId = $(this).closest('.item').data('item-id');
-    let palletNum = $(this).data('properties')[0][1];
-    let main_Product_Id = $(this).data('properties')[1][1];
-    let subProductId1 = $(this).data('properties')[2][1];
-    let subProductId2 = $(this).data('properties')[3][1];
-    let $breaking_val = $cartpc % palletNum;
-   
-    $(this).closest('.product-list')[0].querySelectorAll('.custom-product').forEach(item=> {
-        let str_selectedId = item.querySelector('input').getAttribute('data-properties');
-        let selectedId = JSON.parse(str_selectedId)[0][1];
-        if (selectedId == main_Product_Id ) {
-            console.log(item, "herer");
-            var key = item.getAttribute('data-item-key');
-            updates[key] = 0;
-            console.log(updates[key], "key");
+    if ($(this).data('properties').length > 2) {
+        let $cartpc = $(this).val();
+        let mainProductId = $(this).closest('.item').data('item-id');
+        let palletNum = $(this).data('properties')[0][1];
+        let main_Product_Id = $(this).data('properties')[1][1];
+        let subProductId1 = $(this).data('properties')[2][1];
+        let subProductId2 = $(this).data('properties')[3][1];
+        let $breaking_val = $cartpc % palletNum;
+    
+        $(this).closest('.product-list')[0].querySelectorAll('.custom-product').forEach(item=> {
+            let str_selectedId = item.querySelector('input').getAttribute('data-properties');
+            let selectedId = JSON.parse(str_selectedId)[0][1];
+            if (selectedId == main_Product_Id ) {
+                console.log(item, "herer");
+                var key = item.getAttribute('data-item-key');
+                updates[key] = 0;
+                console.log(updates[key], "key");
 
-            data = {
-            items: [
-                {
-                    id: mainProductId,
-                    quantity: 0,
-                    properties: {
-                        '_pallet_num': palletNum,
-                        '_mainproduct_id': main_Product_Id,
-                        '_subproduct_id_0': subProductId1,
-                        '_subproduct_id_1': subProductId2
-                    }
-                },
-                {
-                    id: subProductId1,
-                    quantity: 0,
-                    properties: {
-                        '_mainproduct_id': main_Product_Id,
-                    }
-                }
-                ]
-            }
-
-            if ($breaking_val != 0) {
                 data = {
-                    items: [
-                        {
-                            id: mainProductId,
-                            quantity: 0,
-                            properties: {
-                                '_pallet_num': palletNum,
-                                '_mainproduct_id': main_Product_Id,
-                                '_subproduct_id_0': subProductId1,
-                                '_subproduct_id_1': subProductId2
-                            }
-                        },
-                        {
-                            id: subProductId1,
-                            quantity: 0,
-                            properties: {
-                                '_mainproduct_id': main_Product_Id
-                            }
-                        },
-                        {
-                            id: subProductId2,
-                            quantity: 0,
-                            properties: {
-                                '_mainproduct_id': main_Product_Id
-                            }
+                items: [
+                    {
+                        id: mainProductId,
+                        quantity: 0,
+                        properties: {
+                            '_pallet_num': palletNum,
+                            '_mainproduct_id': main_Product_Id,
+                            '_subproduct_id_0': subProductId1,
+                            '_subproduct_id_1': subProductId2
                         }
+                    },
+                    {
+                        id: subProductId1,
+                        quantity: 0,
+                        properties: {
+                            '_mainproduct_id': main_Product_Id,
+                        }
+                    }
                     ]
                 }
-            }      
-            
-            updates[$(this).closest('.item').data('item-key')] = 0;
-        }
-    })
+
+                if ($breaking_val != 0) {
+                    data = {
+                        items: [
+                            {
+                                id: mainProductId,
+                                quantity: 0,
+                                properties: {
+                                    '_pallet_num': palletNum,
+                                    '_mainproduct_id': main_Product_Id,
+                                    '_subproduct_id_0': subProductId1,
+                                    '_subproduct_id_1': subProductId2
+                                }
+                            },
+                            {
+                                id: subProductId1,
+                                quantity: 0,
+                                properties: {
+                                    '_mainproduct_id': main_Product_Id
+                                }
+                            },
+                            {
+                                id: subProductId2,
+                                quantity: 0,
+                                properties: {
+                                    '_mainproduct_id': main_Product_Id
+                                }
+                            }
+                        ]
+                    }
+                }      
+                
+                updates[$(this).closest('.item').data('item-key')] = 0;
+            }
+        })
     } else {
         console.log($(this)[0].id.split('_'),"here");
         var nomalProductId = $(this)[0].id.split('_')[1];
@@ -174,7 +174,7 @@ function changeItem(_this) {
     var updates = {};
     var data ={};
 
-    if (_this.data('properties').length > 1) {        
+    if (_this.data('properties').length > 2) {        
 
         let $cartpc = _this.val();
         let mainProductId = _this.closest('.item').data('item-id');
